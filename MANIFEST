@@ -7,6 +7,7 @@ lib/XML/Generator/RSS10/content.pm
 lib/XML/Generator/RSS10/dc.pm
 lib/XML/Generator/RSS10/Module.pm
 lib/XML/Generator/RSS10/sy.pm
+LICENSE
 MANIFEST			This list of files
 META.yml
 README
