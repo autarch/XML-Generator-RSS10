@@ -7,7 +7,7 @@ use base 'XML::Generator::RSS10::Module';
 use Params::Validate qw( validate SCALAR );
 
 
-sub NamespaceURI { 'http://web.resource.org/cc' }
+sub NamespaceURI { 'http://web.resource.org/cc/' }
 
 use constant CONTENTS_SPEC => { license => { type => SCALAR },
                               };
