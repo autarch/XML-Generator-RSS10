@@ -2,6 +2,7 @@ Build.PL
 Changes
 lib/XML/Generator/RSS10.pm
 lib/XML/Generator/RSS10/admin.pm
+lib/XML/Generator/RSS10/cc.pm
 lib/XML/Generator/RSS10/content.pm
 lib/XML/Generator/RSS10/dc.pm
 lib/XML/Generator/RSS10/Module.pm
@@ -18,5 +19,6 @@ t/05-modules.t
 t/06-custom-modules.t
 t/07-state-errors.t
 t/08-content-module.t
+t/09-cc-module.t
 t/pod-coverage.t
 t/pod.t

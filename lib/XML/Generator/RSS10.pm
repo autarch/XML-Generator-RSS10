@@ -96,6 +96,8 @@ sub item
 
     $self->_contents( \%p, qw( title link ) );
 
+    $self->_call_modules(\%p);
+
     $self->_element_with_cdata( '', 'description', $p{description} )
         if defined $p{description};
 
@@ -134,6 +136,8 @@ sub image
 
     $self->_contents( \%p, qw( title url link ) );
 
+    $self->_call_modules(\%p);
+
     $self->{state}{image} = $p{url};
 
     $self->_end_element( '', 'image' );
@@ -168,6 +172,8 @@ sub textinput
     $self->_newline_if_pretty;
 
     $self->_contents( \%p, qw( title description name url ) );
+
+    $self->_call_modules(\%p);
 
     $self->{state}{textinput} = $p{url};
 
@@ -231,6 +237,13 @@ sub channel
     $self->_end_element( '', 'items' );
     $self->_newline_if_pretty;
 
+    $self->_call_modules(\%p);
+
+    foreach my $mod ( values %{ $self->{modules} } )
+    {
+        $mod->channel_hook($self) if $mod->can('channel_hook');
+    }
+
     $self->_end_element( '', 'channel' );
     $self->_newline_if_pretty;
 
@@ -261,6 +274,12 @@ sub _contents
         $self->_element_with_data( '', $elt, $p->{$elt} );
         $self->_newline_if_pretty;
     }
+}
+
+sub _call_modules
+{
+    my $self = shift;
+    my $p = shift;
 
     foreach my $pre ( sort keys %{ $self->{modules} } )
     {
