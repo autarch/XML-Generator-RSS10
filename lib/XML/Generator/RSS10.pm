@@ -506,10 +506,11 @@ a module named C<< XML::Generator::RSS10::<prefix> >>.
 
 This module comes with support for the core RSS 1.0 modules, which are
 Content (content), Dublin Core (dc), and Syndication (sy).  It also
-include a module supporting the proposed Administrative (admin)
-module.  See the docs for C<XML::Generator::RSS10::content>,
-C<XML::Generator::RSS10::dc>, C<XML::Generator::RSS10::sy>, and
-C<XML::Generator::RSS10::admin> for details on how to use them.
+include a module supporting the proposed Administrative (admin) and
+Creative Commons (cc) modules.  See the docs for
+C<XML::Generator::RSS10::content>, C<XML::Generator::RSS10::dc>,
+C<XML::Generator::RSS10::sy>, C<XML::Generator::RSS10::admin>, and
+C<XML::Generator::RSS10::cc> for details on how to use them.
 
 The Dublin Core and Syndication modules are loaded by default if this
 parameter is not specified.
