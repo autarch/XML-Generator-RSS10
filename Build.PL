@@ -16,6 +16,7 @@ my $builder =
                                  },
           build_requires      => { 'XML::SAX::Writer' => 0 },
           add_to_cleanup      => [ 'XML-Generator-RSS10-*' ],
+          create_makefile_pl  => 'passthrough',
         );
 
 $builder->create_build_script();
