@@ -50,8 +50,8 @@ my %Licenses = ( 'http://creativecommons.org/licenses/by/2.0/' =>
 sub contents
 {
     my $class = shift;
-    my $rss  = shift;
-    my %p    = validate( @_, CONTENTS_SPEC );
+    my $rss   = shift;
+    my %p     = validate( @_, CONTENTS_SPEC );
 
     if ( exists $p{license} )
     {
