@@ -207,7 +207,7 @@ sub channel
                          );
     $self->_newline_if_pretty;
 
-    $self->_contents( \%p, qw( title link ) );
+    $self->_contents( \%p, qw( title link description ) );
 
     foreach my $elt ( grep { $self->{state}{$_} } qw( image textinput ) )
     {
