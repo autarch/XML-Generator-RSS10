@@ -98,8 +98,11 @@ sub item
 
     $self->_call_modules(\%p);
 
-    $self->_element_with_cdata( '', 'description', $p{description} )
-        if defined $p{description};
+    if ( defined $p{description} )
+    {
+        $self->_element_with_cdata( '', 'description', $p{description} );
+        $self->_newline_if_pretty;
+    }
 
     $self->_end_element( '', 'item' );
     $self->_newline_if_pretty;
@@ -207,7 +210,10 @@ sub channel
                          );
     $self->_newline_if_pretty;
 
-    $self->_contents( \%p, qw( title link description ) );
+    $self->_contents( \%p, qw( title link ) );
+
+    $self->_element_with_cdata( '', 'description', $p{description} );
+    $self->_newline_if_pretty;
 
     foreach my $elt ( grep { $self->{state}{$_} } qw( image textinput ) )
     {
@@ -604,6 +610,9 @@ The channel's link.  Required.
 =item * description
 
 The channel's description.  Required.
+
+This element will be formatted as CDATA since many people like to put
+HTML in it.
 
 =back
 
