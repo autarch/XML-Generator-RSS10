@@ -16,7 +16,7 @@ BEGIN
     }
     else
     {
-        plan tests => 13;
+        plan tests => 14;
     }
 }
 
@@ -25,7 +25,7 @@ BEGIN
 
     my $writer = XML::SAX::Writer->new( Output => \$out );
 
-    my $gen = XML::Generator::RSS10->new( Handler => $writer );
+    my $gen = XML::Generator::RSS10->new( Handler => $writer, pretty => 1 );
 
     $gen->item( title => 'Item title',
                 link  => 'http://example.com/foo',
@@ -33,7 +33,7 @@ BEGIN
 
     $gen->channel( title       => 'Channel title',
                    link        => 'http://example.com/',
-                   description => 'a description',
+                   description => 'channel description',
                  );
 
     like( $out, qr/<\?xml\s+version=.1\.0.\?>/s,
@@ -71,6 +71,9 @@ BEGIN
 
     like( $out, qr{<channel[^>]+>.*<link>http://example\.com/</link>.*</channel>}s,
           'expect to find link tag inside channel tag' );
+
+    like( $out, qr{<channel[^>]+>.*<description><!\[CDATA\[channel description\]\]></description>.+</channel>}s,
+          'expect to find description tag inside channel tag' );
 
     like( $out, qr{<channel[^>]+>.*<items>\s*<rdf:Seq>.*</channel>}s,
           'expect to find items & rdf:Seq tags inside channel tag' );

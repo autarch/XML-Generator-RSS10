@@ -184,9 +184,9 @@ sub textinput
     $self->_newline_if_pretty;
 }
 
-use constant CHANNEL_SPEC => ( title         => { type => SCALAR },
-                               link          => { type => SCALAR },
-                               description   => { type => SCALAR },
+use constant CHANNEL_SPEC => ( title       => { type => SCALAR },
+                               link        => { type => SCALAR },
+                               description => { type => SCALAR },
                              );
 
 sub channel
@@ -210,7 +210,7 @@ sub channel
                          );
     $self->_newline_if_pretty;
 
-    $self->_contents( \%p, qw( title link ) );
+    $self->_contents( \%p, qw( title link description ) );
 
     $self->_element_with_cdata( '', 'description', $p{description} );
     $self->_newline_if_pretty;
