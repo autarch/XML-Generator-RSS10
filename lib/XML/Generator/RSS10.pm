@@ -567,8 +567,8 @@ The image's URL.  Required.
 
 =head2 textinput
 
-This method is used to add an image element to the document.  It may
-only be called once.  It accepts the following parameters:
+This method is used to add an textinput element to the document.  It
+may only be called once.  It accepts the following parameters:
 
 =over 4
 
