@@ -26,13 +26,7 @@ sub contents
 
     if ( exists $p{encoded} )
     {
-        $rss->_start_element( 'content', 'encoded' );
-
-        $rss->start_cdata;
-        $rss->characters( { Data => $p{encoded} } );
-        $rss->end_cdata;
-
-        $rss->_end_element_no_indent( 'content', 'encoded' );
+        $rss->_element_with_cdata( 'content', 'encoded', $p{encoded} );
         $rss->_newline_if_pretty;
     }
 
@@ -94,13 +88,7 @@ sub _item
 
     if ( exists $p{content} )
     {
-        $rss->_start_element( 'rdf', 'value' );
-
-        $rss->start_cdata;
-        $rss->characters( { Data => $p{content} } );
-        $rss->end_cdata;
-
-        $rss->_end_element_no_indent( 'rdf', 'value' );
+        $rss->_element_with_cdata( 'rdf', 'value', $p{content} );
         $rss->_newline_if_pretty;
     }
 

@@ -96,7 +96,7 @@ sub item
 
     $self->_contents( \%p, qw( title link ) );
 
-    $self->_element_with_data( '', 'description', $p{description} )
+    $self->_element_with_cdata( '', 'description', $p{description} )
         if defined $p{description};
 
     $self->_end_element( '', 'item' );
@@ -288,6 +288,21 @@ sub _element_with_data
     $self->_end_element(@_);
 }
 
+sub _element_with_cdata
+{
+    my $self = shift;
+    my $data = pop;
+
+    $self->_start_element(@_);
+    if ( length $data )
+    {
+        $self->start_cdata;
+        $self->characters( { Data => $data } );
+        $self->end_cdata;
+    }
+    $self->_end_element(@_);
+}
+
 sub _start_element
 {
     my $self = shift;
@@ -318,7 +333,7 @@ sub _end_element
 
     if ( $self->{pretty} )
     {
-        unless ( (caller(1))[3] =~ /(?:_element|_element_with_data|_end_element_no_indent)$/ )
+        unless ( (caller(1))[3] =~ /(?:_element|_element_with_c?data)$/ )
         {
             $self->ignorable_whitespace( { Data => ' ' x ( $self->{state}{indent} - 1 ) } )
                 if $self->{state}{indent} > 1;
@@ -328,11 +343,6 @@ sub _end_element
     $self->end_element( { $self->_rss_name_and_prefix(@_) } );
 
     $self->{state}{indent}--;
-}
-
-sub _end_element_no_indent
-{
-    shift->_end_element(@_);
 }
 
 sub _newline_if_pretty
@@ -502,6 +512,9 @@ The item's link.  Required.
 =item * description
 
 The item's link.  Optional.
+
+This element will be formatted as CDATA since many people like to put
+HTML in it.
 
 =back
 

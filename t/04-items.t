@@ -47,7 +47,7 @@ BEGIN
     like( $out, qr{<item\s+rdf:about=.http://example.com/foo2.\s*>}s,
           'expect to find item tag for item 2' );
 
-    like( $out, qr{<item[^>]+>.*<description>Item 2 description</description>.*</item>}s,
+    like( $out, qr{<item[^>]+>.*<description><!\[CDATA\[Item 2 description\]\]></description>.*</item>}s,
           'expect to find description tag inside item tag for item 2' );
 
     like( $out, qr{<items>\s*<rdf:Seq>.*<rdf:li\s+rdf:resource=.http://example\.com/foo1.}s,
