@@ -210,7 +210,7 @@ sub channel
                          );
     $self->_newline_if_pretty;
 
-    $self->_contents( \%p, qw( title link description ) );
+    $self->_contents( \%p, qw( title link ) );
 
     $self->_element_with_cdata( '', 'description', $p{description} );
     $self->_newline_if_pretty;
