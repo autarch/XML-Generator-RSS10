@@ -28,11 +28,9 @@ sub contents
 
 1;
 
+# ABSTRACT: Base class for module that implement RSS 1.0 modules
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10::Module - Base class for module that implement RSS 1.0 modules
 
 =head1 SYNOPSIS
 

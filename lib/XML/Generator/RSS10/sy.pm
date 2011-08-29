@@ -10,11 +10,9 @@ sub NamespaceURI { 'http://purl.org/rss/1.0/modules/syndication/' }
 
 1;
 
+# ABSTRACT: Support for the Syndication (sy) RSS 1.0 module
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10::sy - Support for the Syndication (sy) RSS 1.0 module
 
 =head1 SYNOPSIS
 

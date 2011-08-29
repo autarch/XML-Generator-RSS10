@@ -4,7 +4,6 @@ use strict;
 
 use vars qw($VERSION);
 
-$VERSION = '0.01';
 
 use base 'XML::SAX::Base';
 
@@ -443,11 +442,9 @@ sub _newline_if_pretty
 
 1;
 
+# ABSTRACT: Generate SAX events for RSS
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10 - Generate SAX events for RSS
 
 =head1 SYNOPSIS
 
@@ -663,25 +660,11 @@ create.
 However, if you don't need any of these features you may be better off
 using C<XML::RSS> instead.
 
-=head1 AUTHOR
-
-David Rolsky, C<< <autarch@urth.org> >>
-
 =head1 BUGS
 
 Please report any bugs or feature requests to
 C<bug-xml-generator-rss10@rt.cpan.org>, or through the web interface
 at L<http://rt.cpan.org>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2004 David Rolsky, All Rights Reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-The full text of the license can be found in the LICENSE file included
-with this module.
 
 =cut

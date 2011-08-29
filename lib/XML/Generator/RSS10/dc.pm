@@ -11,11 +11,9 @@ sub NamespaceURI { 'http://purl.org/dc/elements/1.1/' }
 
 1;
 
+# ABSTRACT: Support for the Dublin Core (dc) RSS 1.0 module
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10::dc - Support for the Dublin Core (dc) RSS 1.0 module
 
 =head1 SYNOPSIS
 

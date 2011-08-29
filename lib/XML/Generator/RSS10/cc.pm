@@ -96,11 +96,9 @@ sub channel_hook
 
 1;
 
+# ABSTRACT: Support for the Creative Commons (cc) RSS 1.0 module
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10::cc - Support for the Creative Commons (cc) RSS 1.0 module
 
 =head1 SYNOPSIS
 

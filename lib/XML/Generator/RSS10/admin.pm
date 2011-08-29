@@ -25,11 +25,9 @@ sub contents
 
 1;
 
+# ABSTRACT: Support for the Administrative (admin) RSS 1.0 module
+
 __END__
-
-=head1 NAME
-
-XML::Generator::RSS10::admin - Support for the Administrative (admin) RSS 1.0 module
 
 =head1 SYNOPSIS
 
