@@ -45,6 +45,39 @@ my %Licenses = (
         permits  => [qw( Reproduction Distribution DerivativeWorks )],
         requires => [qw( Attribution Notice ShareAlike )],
     },
+
+    'http://creativecommons.org/licenses/by/3.0/us/' => {
+        permits  => [qw( Reproduction Distribution DerivativeWorks )],
+        requires => [qw( Attribution Notice )],
+    },
+
+    'http://creativecommons.org/licenses/by-nd/3.0/us/' => {
+        permits  => [qw( Reproduction Distribution )],
+        requires => [qw( Attribution Notice )],
+    },
+
+    'http://creativecommons.org/licenses/by-nc-nd/3.0/us/' => {
+        permits   => [qw( Reproduction Distribution )],
+        requires  => [qw( Attribution Notice )],
+        prohibits => ['CommercialUse'],
+    },
+
+    'http://creativecommons.org/licenses/by-nc/3.0/us/' => {
+        permits   => [qw( Reproduction Distribution DerivativeWorks )],
+        requires  => [qw( Attribution Notice )],
+        prohibits => ['CommercialUse'],
+    },
+
+    'http://creativecommons.org/licenses/by-nc-sa/3.0/us/' => {
+        permits   => [qw( Reproduction Distribution DerivativeWorks )],
+        requires  => [qw( Attribution Notice ShareAlike )],
+        prohibits => ['CommercialUse'],
+    },
+
+    'http://creativecommons.org/licenses/by-sa/3.0/us/' => {
+        permits  => [qw( Reproduction Distribution DerivativeWorks )],
+        requires => [qw( Attribution Notice ShareAlike )],
+    },
 );
 
 sub contents {
@@ -104,7 +137,7 @@ __END__
     $rss->item( title => 'Exciting News About my Pants!',
                 link  => 'http://pants.example.com/my/news.html',
                 description => 'My pants are full of ants!',
-                cc => { license => 'http://creativecommons.org/licenses/by/2.0/' }
+                cc => { license => 'http://creativecommons.org/licenses/by/3.0/us/' }
               );
 
     $rss->channel( title => 'Pants',
