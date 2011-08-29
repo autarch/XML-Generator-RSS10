@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 8;
-    }
+            }
 }
 
 {
@@ -101,3 +99,5 @@ BEGIN
           'expect to find CDATA inside content:item tag' );
 
 }
+
+done_testing();

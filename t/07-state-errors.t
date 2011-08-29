@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 6;
-    }
+            }
 }
 
 {
@@ -189,3 +187,5 @@ BEGIN
     like( $@, qr/call channel\(\) more than once/,
           'call channel twice' );
 }
+
+done_testing();

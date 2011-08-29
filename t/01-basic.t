@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 14;
-    }
+            }
 }
 
 {
@@ -81,3 +79,5 @@ BEGIN
     like( $out, qr{<items>\s*<rdf:Seq>\s*<rdf:li\s+rdf:resource=.http://example\.com/foo.}s,
           'expect to find rdf:li tag inside channel rdf:Seq' );
 }
+
+done_testing();

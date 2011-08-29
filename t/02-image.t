@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 5;
-    }
+            }
 }
 
 {
@@ -57,3 +55,5 @@ BEGIN
           qr{<channel[^>]+>.*<image\s*rdf:resource=.http://example\.com/image\.jpg.*</channel>}s,
           'expect to find image tag inside channel tag' );
 }
+
+done_testing();

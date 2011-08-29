@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 4;
-    }
+            }
 }
 
 {
@@ -62,3 +60,5 @@ BEGIN
           qr{<channel[^>]+>.*<admin:errorReportsTo\s*rdf:resource=.yomama\@example\.com.*</channel>}s,
           'expect to find dc:creator tag inside channel tag' );
 }
+
+done_testing();

@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 6;
-    }
+            }
 }
 
 {
@@ -62,3 +60,5 @@ BEGIN
           qr{<channel[^>]+>.*<textinput\s*rdf:resource=.http://example\.com/search.*</channel>}s,
           'expect to find textinput tag inside channel tag' );
 }
+
+done_testing();

@@ -1,6 +1,5 @@
-#!/usr/bin/perl -w
-
 use strict;
+use warnings;
 
 use XML::Generator::RSS10;
 
@@ -16,8 +15,7 @@ BEGIN
     }
     else
     {
-        plan tests => 11;
-    }
+            }
 }
 
 {
@@ -100,3 +98,4 @@ BEGIN
           'expect to find cc:License for by-nc-sa tag' );
 }
 
+done_testing();
