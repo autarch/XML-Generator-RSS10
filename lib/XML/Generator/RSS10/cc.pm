@@ -6,55 +6,53 @@ use base 'XML::Generator::RSS10::Module';
 
 use Params::Validate qw( validate SCALAR );
 
-
 sub NamespaceURI { 'http://web.resource.org/cc/' }
 
-use constant CONTENTS_SPEC => { license => { type => SCALAR },
-                              };
+use constant CONTENTS_SPEC => {
+    license => { type => SCALAR },
+};
 
-my %Licenses = ( 'http://creativecommons.org/licenses/by/2.0/' =>
-                 { permits  => [ qw( Reproduction Distribution DerivativeWorks ) ],
-                   requires => [ qw( Attribution Notice ) ],
-                 },
+my %Licenses = (
+    'http://creativecommons.org/licenses/by/2.0/' => {
+        permits  => [qw( Reproduction Distribution DerivativeWorks )],
+        requires => [qw( Attribution Notice )],
+    },
 
-                 'http://creativecommons.org/licenses/by-nd/2.0/' =>
-                 { permits  => [ qw( Reproduction Distribution ) ],
-                   requires => [ qw( Attribution Notice ) ],
-                 },
+    'http://creativecommons.org/licenses/by-nd/2.0/' => {
+        permits  => [qw( Reproduction Distribution )],
+        requires => [qw( Attribution Notice )],
+    },
 
-                 'http://creativecommons.org/licenses/by-nc-nd/2.0/' =>
-                 { permits   => [ qw( Reproduction Distribution ) ],
-                   requires  => [ qw( Attribution Notice ) ],
-                   prohibits => [ 'CommercialUse' ],
-                 },
+    'http://creativecommons.org/licenses/by-nc-nd/2.0/' => {
+        permits   => [qw( Reproduction Distribution )],
+        requires  => [qw( Attribution Notice )],
+        prohibits => ['CommercialUse'],
+    },
 
-                 'http://creativecommons.org/licenses/by-nc/2.0/' =>
-                 { permits   => [ qw( Reproduction Distribution DerivativeWorks ) ],
-                   requires  => [ qw( Attribution Notice ) ],
-                   prohibits => [ 'CommercialUse' ],
-                 },
+    'http://creativecommons.org/licenses/by-nc/2.0/' => {
+        permits   => [qw( Reproduction Distribution DerivativeWorks )],
+        requires  => [qw( Attribution Notice )],
+        prohibits => ['CommercialUse'],
+    },
 
-                 'http://creativecommons.org/licenses/by-nc-sa/2.0/' =>
-                 { permits   => [ qw( Reproduction Distribution DerivativeWorks ) ],
-                   requires  => [ qw( Attribution Notice ShareAlike ) ],
-                   prohibits => [ 'CommercialUse' ],
-                 },
+    'http://creativecommons.org/licenses/by-nc-sa/2.0/' => {
+        permits   => [qw( Reproduction Distribution DerivativeWorks )],
+        requires  => [qw( Attribution Notice ShareAlike )],
+        prohibits => ['CommercialUse'],
+    },
 
-                 'http://creativecommons.org/licenses/by-sa/2.0/' =>
-                 { permits   => [ qw( Reproduction Distribution DerivativeWorks ) ],
-                   requires  => [ qw( Attribution Notice ShareAlike ) ],
-                 },
-               );
+    'http://creativecommons.org/licenses/by-sa/2.0/' => {
+        permits  => [qw( Reproduction Distribution DerivativeWorks )],
+        requires => [qw( Attribution Notice ShareAlike )],
+    },
+);
 
-
-sub contents
-{
+sub contents {
     my $class = shift;
     my $rss   = shift;
     my %p     = validate( @_, CONTENTS_SPEC );
 
-    if ( exists $p{license} )
-    {
+    if ( exists $p{license} ) {
         die "Unknown license: $p{license}\n"
             unless exists $Licenses{ $p{license} };
 
@@ -65,25 +63,23 @@ sub contents
     }
 }
 
-sub channel_hook
-{
+sub channel_hook {
     my $class = shift;
-    my $rss  = shift;
+    my $rss   = shift;
 
-    foreach my $license ( keys %{ $rss->{__cc_licenses__} } )
-    {
-        $rss->_start_element( 'cc', 'License',
-                              [ 'rdf', 'about', $license ],
-                            );
+    foreach my $license ( keys %{ $rss->{__cc_licenses__} } ) {
+        $rss->_start_element(
+            'cc', 'License',
+            [ 'rdf', 'about', $license ],
+        );
         $rss->_newline_if_pretty;
 
-        foreach my $elt ( keys %{ $Licenses{$license} } )
-        {
-            foreach my $val ( @{ $Licenses{$license}{$elt} } )
-            {
-                $rss->_element( 'cc', $elt,
-                                [ 'rdf', 'resource', "http://web.resource.org/cc/$val" ],
-                              );
+        foreach my $elt ( keys %{ $Licenses{$license} } ) {
+            foreach my $val ( @{ $Licenses{$license}{$elt} } ) {
+                $rss->_element(
+                    'cc', $elt,
+                    [ 'rdf', 'resource', "http://web.resource.org/cc/$val" ],
+                );
                 $rss->_newline_if_pretty;
             }
         }
@@ -92,7 +88,6 @@ sub channel_hook
         $rss->_newline_if_pretty;
     }
 }
-
 
 1;
 

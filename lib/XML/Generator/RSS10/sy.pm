@@ -4,9 +4,7 @@ use strict;
 
 use base 'XML::Generator::RSS10::Module';
 
-
 sub NamespaceURI { 'http://purl.org/rss/1.0/modules/syndication/' }
-
 
 1;
 

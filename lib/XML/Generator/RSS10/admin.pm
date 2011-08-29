@@ -4,24 +4,21 @@ use strict;
 
 use base 'XML::Generator::RSS10::Module';
 
-
 sub NamespaceURI { 'http://webns.net/mvcb/' }
 
-sub contents
-{
+sub contents {
     my $class = shift;
-    my $rss = shift;
-    my $p = shift;
+    my $rss   = shift;
+    my $p     = shift;
 
-    foreach my $elt ( sort keys %$p )
-    {
-        $rss->_element( $class->Prefix, $elt,
-                        [ 'rdf', 'resource', $p->{$elt} ],
-                      );
+    foreach my $elt ( sort keys %$p ) {
+        $rss->_element(
+            $class->Prefix, $elt,
+            [ 'rdf', 'resource', $p->{$elt} ],
+        );
         $rss->_newline_if_pretty;
     }
 }
-
 
 1;
 

@@ -4,7 +4,6 @@ use strict;
 
 use vars qw($VERSION);
 
-
 use base 'XML::SAX::Base';
 
 use Params::Validate qw( validate SCALAR ARRAYREF BOOLEAN OBJECT );
@@ -12,26 +11,24 @@ use Params::Validate qw( validate SCALAR ARRAYREF BOOLEAN OBJECT );
 use XML::Generator::RSS10::dc;
 use XML::Generator::RSS10::sy;
 
+use constant NEW_SPEC => {
+    modules => {
+        type    => ARRAYREF,
+        default => [ 'dc', 'sy' ],
+    },
+    pretty  => { type => BOOLEAN, default => 0 },
+    Handler => { type => OBJECT },
+};
 
-use constant NEW_SPEC => { modules => { type => ARRAYREF,
-                                        default => [ 'dc', 'sy' ],
-                                      },
-                           pretty  => { type => BOOLEAN, default => 0 },
-                           Handler => { type => OBJECT },
-                         };
-
-sub new
-{
+sub new {
     my $class = shift;
     my %p = validate( @_, NEW_SPEC );
 
     my %mod;
-    foreach my $prefix ( @{ delete $p{modules} } )
-    {
+    foreach my $prefix ( @{ delete $p{modules} } ) {
         my $package = __PACKAGE__ . "::$prefix";
 
-        unless ( $package->can('Prefix') )
-        {
+        unless ( $package->can('Prefix') ) {
             eval "require $package";
             die $@ if $@;
         }
@@ -39,11 +36,11 @@ sub new
         $mod{$prefix} = $package;
     }
 
-    my $self = bless { %p,
-                       state   => {},
-                       modules => \%mod,
-                     };
-
+    my $self = bless {
+        %p,
+        state   => {},
+        modules => \%mod,
+    };
 
     $self->{state}{indent} = 0;
     $self->{state}{items}  = [];
@@ -53,18 +50,17 @@ sub new
     return $self;
 }
 
-sub parse
-{
+sub parse {
     die __PACKAGE__ . " does not implement RSS parsing\n";
 }
 
-sub _start
-{
+sub _start {
     my $self = shift;
 
     $self->start_document;
 
-    $self->processing_instruction( { Target => 'xml', Data => 'version="1.0"' } );
+    $self->processing_instruction(
+        { Target => 'xml', Data => 'version="1.0"' } );
 
     $self->_declare_namespaces;
     $self->_newline_if_pretty;
@@ -73,32 +69,34 @@ sub _start
     $self->_newline_if_pretty;
 }
 
-use constant ITEM_SPEC => ( title         => { type => SCALAR },
-                            link          => { type => SCALAR },
-                            description   => { type => SCALAR, optional => 1 },
-                          );
+use constant ITEM_SPEC => (
+    title       => { type => SCALAR },
+    link        => { type => SCALAR },
+    description => { type => SCALAR, optional => 1 },
+);
 
-sub item
-{
+sub item {
     my $self = shift;
-    my %p = validate( @_,
-                      { ITEM_SPEC,
-                        map { $_ => { optional => 1 } }
-                        keys %{ $self->{namespace_prefixes} },
-                      },
-                    );
+    my %p    = validate(
+        @_,
+        {
+            ITEM_SPEC,
+            map { $_ => { optional => 1 } }
+                keys %{ $self->{namespace_prefixes} },
+        },
+    );
 
-    $self->_start_element( '', 'item',
-                           [ 'rdf', 'about' => $p{link} ],
-                         );
+    $self->_start_element(
+        '', 'item',
+        [ 'rdf', 'about' => $p{link} ],
+    );
     $self->_newline_if_pretty;
 
     $self->_contents( \%p, qw( title link ) );
 
-    $self->_call_modules(\%p);
+    $self->_call_modules( \%p );
 
-    if ( defined $p{description} )
-    {
+    if ( defined $p{description} ) {
         $self->_element_with_cdata( '', 'description', $p{description} );
         $self->_newline_if_pretty;
     }
@@ -110,20 +108,22 @@ sub item
 
 }
 
-use constant IMAGE_SPEC => ( title         => { type => SCALAR },
-                             link          => { type => SCALAR },
-                             url           => { type => SCALAR },
-                           );
+use constant IMAGE_SPEC => (
+    title => { type => SCALAR },
+    link  => { type => SCALAR },
+    url   => { type => SCALAR },
+);
 
-sub image
-{
+sub image {
     my $self = shift;
-    my %p = validate( @_,
-                      { IMAGE_SPEC,
-                        map { $_ => { optional => 1 } }
-                        keys %{ $self->{namespace_prefixes} },
-                      },
-                    );
+    my %p    = validate(
+        @_,
+        {
+            IMAGE_SPEC,
+            map { $_ => { optional => 1 } }
+                keys %{ $self->{namespace_prefixes} },
+        },
+    );
 
     die "Cannot call image() more than once.\n"
         if $self->{state}{image};
@@ -131,14 +131,15 @@ sub image
     die "Cannot call image() after calling channel().\n"
         if $self->{state}{finished};
 
-    $self->_start_element( '', 'image',
-                           [ 'rdf', 'about' => $p{url} ],
-                         );
+    $self->_start_element(
+        '', 'image',
+        [ 'rdf', 'about' => $p{url} ],
+    );
     $self->_newline_if_pretty;
 
     $self->_contents( \%p, qw( title url link ) );
 
-    $self->_call_modules(\%p);
+    $self->_call_modules( \%p );
 
     $self->{state}{image} = $p{url};
 
@@ -146,21 +147,23 @@ sub image
     $self->_newline_if_pretty;
 }
 
-use constant TEXTINPUT_SPEC => ( title         => { type => SCALAR },
-                                 description   => { type => SCALAR },
-                                 name          => { type => SCALAR },
-                                 url           => { type => SCALAR },
-                               );
+use constant TEXTINPUT_SPEC => (
+    title       => { type => SCALAR },
+    description => { type => SCALAR },
+    name        => { type => SCALAR },
+    url         => { type => SCALAR },
+);
 
-sub textinput
-{
+sub textinput {
     my $self = shift;
-    my %p = validate( @_,
-                      { TEXTINPUT_SPEC,
-                        map { $_ => { optional => 1 } }
-                        keys %{ $self->{namespace_prefixes} },
-                      },
-                    );
+    my %p    = validate(
+        @_,
+        {
+            TEXTINPUT_SPEC,
+            map { $_ => { optional => 1 } }
+                keys %{ $self->{namespace_prefixes} },
+        },
+    );
 
     die "Cannot call textinput() more than once().\n"
         if $self->{state}{textinput};
@@ -168,14 +171,15 @@ sub textinput
     die "Cannot call textinput() after calling channel().\n"
         if $self->{state}{finished};
 
-    $self->_start_element( '', 'textinput',
-                           [ 'rdf', 'about' => $p{url} ],
-                         );
+    $self->_start_element(
+        '', 'textinput',
+        [ 'rdf', 'about' => $p{url} ],
+    );
     $self->_newline_if_pretty;
 
     $self->_contents( \%p, qw( title description name url ) );
 
-    $self->_call_modules(\%p);
+    $self->_call_modules( \%p );
 
     $self->{state}{textinput} = $p{url};
 
@@ -183,20 +187,22 @@ sub textinput
     $self->_newline_if_pretty;
 }
 
-use constant CHANNEL_SPEC => ( title       => { type => SCALAR },
-                               link        => { type => SCALAR },
-                               description => { type => SCALAR },
-                             );
+use constant CHANNEL_SPEC => (
+    title       => { type => SCALAR },
+    link        => { type => SCALAR },
+    description => { type => SCALAR },
+);
 
-sub channel
-{
+sub channel {
     my $self = shift;
-    my %p = validate( @_,
-                      { CHANNEL_SPEC,
-                        map { $_ => { optional => 1 } }
-                        keys %{ $self->{namespace_prefixes} },
-                      },
-                    );
+    my %p    = validate(
+        @_,
+        {
+            CHANNEL_SPEC,
+            map { $_ => { optional => 1 } }
+                keys %{ $self->{namespace_prefixes} },
+        },
+    );
 
     die "Cannot call channel() without any items.\n"
         unless @{ $self->{state}{items} };
@@ -204,9 +210,10 @@ sub channel
     die "Cannot call channel() more than once.\n"
         if $self->{state}{finished};
 
-    $self->_start_element( '', 'channel',
-                           [ 'rdf', 'about' => $p{link} ],
-                         );
+    $self->_start_element(
+        '', 'channel',
+        [ 'rdf', 'about' => $p{link} ],
+    );
     $self->_newline_if_pretty;
 
     $self->_contents( \%p, qw( title link ) );
@@ -214,11 +221,11 @@ sub channel
     $self->_element_with_cdata( '', 'description', $p{description} );
     $self->_newline_if_pretty;
 
-    foreach my $elt ( grep { $self->{state}{$_} } qw( image textinput ) )
-    {
-        $self->_element( '', $elt,
-                         [ 'rdf', 'resource' => $self->{state}{$elt} ],
-                       );
+    foreach my $elt ( grep { $self->{state}{$_} } qw( image textinput ) ) {
+        $self->_element(
+            '', $elt,
+            [ 'rdf', 'resource' => $self->{state}{$elt} ],
+        );
         $self->_newline_if_pretty;
     }
 
@@ -228,11 +235,11 @@ sub channel
     $self->_start_element( 'rdf', 'Seq' );
     $self->_newline_if_pretty;
 
-    foreach my $i ( @{ $self->{state}{items} } )
-    {
-        $self->_element( 'rdf', 'li',
-                         [ 'rdf', 'resource' => $i ],
-                       );
+    foreach my $i ( @{ $self->{state}{items} } ) {
+        $self->_element(
+            'rdf', 'li',
+            [ 'rdf', 'resource' => $i ],
+        );
         $self->_newline_if_pretty;
     }
 
@@ -242,10 +249,9 @@ sub channel
     $self->_end_element( '', 'items' );
     $self->_newline_if_pretty;
 
-    $self->_call_modules(\%p);
+    $self->_call_modules( \%p );
 
-    foreach my $mod ( values %{ $self->{modules} } )
-    {
+    foreach my $mod ( values %{ $self->{modules} } ) {
         $mod->channel_hook($self) if $mod->can('channel_hook');
     }
 
@@ -257,9 +263,7 @@ sub channel
     $self->{state}{finished} = 1;
 }
 
-
-sub _finish
-{
+sub _finish {
     my $self = shift;
 
     $self->_end_element( 'rdf', 'RDF' );
@@ -268,42 +272,36 @@ sub _finish
     $self->end_document;
 }
 
-sub _contents
-{
-    my $self = shift;
-    my $p = shift;
+sub _contents {
+    my $self     = shift;
+    my $p        = shift;
     my @required = @_;
 
-    for my $elt (@required)
-    {
+    for my $elt (@required) {
         $self->_element_with_data( '', $elt, $p->{$elt} );
         $self->_newline_if_pretty;
     }
 }
 
-sub _call_modules
-{
+sub _call_modules {
     my $self = shift;
-    my $p = shift;
+    my $p    = shift;
 
-    foreach my $pre ( sort keys %{ $self->{modules} } )
-    {
+    foreach my $pre ( sort keys %{ $self->{modules} } ) {
         next unless exists $p->{$pre};
 
         $self->{modules}{$pre}->contents( $self, $p->{$pre} );
     }
 }
 
-sub _element
-{
+sub _element {
     my $self = shift;
 
     $self->_start_element(@_);
     $self->_end_element(@_);
 }
 
-sub _element_with_data
-{
+sub _element_with_data {
     my $self = shift;
     my $data = pop;
 
@@ -312,14 +310,12 @@ sub _element_with_data
     $self->_end_element(@_);
 }
 
-sub _element_with_cdata
-{
+sub _element_with_cdata {
     my $self = shift;
     my $data = pop;
 
     $self->_start_element(@_);
-    if ( length $data )
-    {
+    if ( length $data ) {
         $self->start_cdata;
         $self->characters( { Data => $data } );
         $self->end_cdata;
@@ -327,15 +323,13 @@ sub _element_with_cdata
     $self->_end_element(@_);
 }
 
-sub _start_element
-{
+sub _start_element {
     my $self = shift;
     my ( $name, $prefix ) = ( shift, shift );
 
     my %att;
-    foreach my $a ( grep { @$_ } @_ )
-    {
-        my ( $k, $v ) = $self->_rss_att( @$a );
+    foreach my $a ( grep { @$_ } @_ ) {
+        my ( $k, $v ) = $self->_rss_att(@$a);
 
         $att{$k} = $v;
     }
@@ -343,23 +337,23 @@ sub _start_element
     $self->ignorable_whitespace( { Data => ' ' x $self->{state}{indent} } )
         if $self->{pretty} && $self->{state}{indent};
 
-    $self->start_element( { $self->_rss_name_and_prefix( $name, $prefix ),
-                            Attributes => \%att,
-                          }
-                        );
+    $self->start_element(
+        {
+            $self->_rss_name_and_prefix( $name, $prefix ),
+            Attributes => \%att,
+        }
+    );
 
     $self->{state}{indent}++;
 }
 
-sub _end_element
-{
+sub _end_element {
     my $self = shift;
 
-    if ( $self->{pretty} )
-    {
-        unless ( (caller(1))[3] =~ /(?:_element|_element_with_c?data)$/ )
-        {
-            $self->ignorable_whitespace( { Data => ' ' x ( $self->{state}{indent} - 1 ) } )
+    if ( $self->{pretty} ) {
+        unless ( ( caller(1) )[3] =~ /(?:_element|_element_with_c?data)$/ ) {
+            $self->ignorable_whitespace(
+                { Data => ' ' x ( $self->{state}{indent} - 1 ) } )
                 if $self->{state}{indent} > 1;
         }
     }
@@ -369,43 +363,39 @@ sub _end_element
     $self->{state}{indent}--;
 }
 
-sub _newline_if_pretty
-{
+sub _newline_if_pretty {
     $_[0]->ignorable_whitespace( { Data => "\n" } ) if $_[0]->{pretty};
 }
 
-
 {
-    my %ns =
-        ( ''     => 'http://purl.org/rss/1.0/',
-          rdf    => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        );
+    my %ns = (
+        ''  => 'http://purl.org/rss/1.0/',
+        rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    );
 
-    sub _declare_namespaces
-    {
+    sub _declare_namespaces {
         my $self = shift;
 
-        while ( my ( $p, $uri ) = each %ns )
-        {
-            $self->SUPER::start_prefix_mapping( { Prefix => $p, NamespaceURI => $uri } );
+        while ( my ( $p, $uri ) = each %ns ) {
+            $self->SUPER::start_prefix_mapping(
+                { Prefix => $p, NamespaceURI => $uri } );
 
             $self->{namespace_prefixes}{$p} = $uri;
         }
 
-        foreach my $package ( values %{ $self->{modules} } )
-        {
+        foreach my $package ( values %{ $self->{modules} } ) {
             my $p   = $package->Prefix;
             my $uri = $package->NamespaceURI;
 
-            $self->SUPER::start_prefix_mapping( { Prefix => $p, NamespaceURI => $uri } );
+            $self->SUPER::start_prefix_mapping(
+                { Prefix => $p, NamespaceURI => $uri } );
 
             $self->{namespace_prefixes}{$p} = $uri;
         }
     }
 
-    sub _rss_name_and_prefix
-    {
-        my $self = shift;
+    sub _rss_name_and_prefix {
+        my $self   = shift;
         my $prefix = shift;
         my $local  = shift;
 
@@ -414,15 +404,16 @@ sub _newline_if_pretty
 
         my $name = $prefix ? "$prefix:$local" : $local;
 
-        return ( Name         => $name,
-                 LocalName    => $local,
-                 Prefix       => $prefix,
-                 NamespaceURI => $self->{namespace_prefixes}{$prefix} );
+        return (
+            Name         => $name,
+            LocalName    => $local,
+            Prefix       => $prefix,
+            NamespaceURI => $self->{namespace_prefixes}{$prefix}
+        );
     }
 
-    sub _rss_att
-    {
-        my $self = shift;
+    sub _rss_att {
+        my $self   = shift;
         my $prefix = shift;
         my $att    = shift;
         my $value  = shift;
@@ -430,15 +421,14 @@ sub _newline_if_pretty
         die "Invalid prefix ($prefix)"
             unless exists $self->{namespace_prefixes}{$prefix};
 
-        return
-            ( "{$self->{namespace_prefixes}{$prefix}}$att" =>
-              { $self->_rss_name_and_prefix( $prefix, $att ),
-                Value     => $value,
-              },
-            );
+        return (
+            "{$self->{namespace_prefixes}{$prefix}}$att" => {
+                $self->_rss_name_and_prefix( $prefix, $att ),
+                Value => $value,
+            },
+        );
     }
 }
-
 
 1;
 

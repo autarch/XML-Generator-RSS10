@@ -4,10 +4,7 @@ use strict;
 
 use base 'XML::Generator::RSS10::Module';
 
-
 sub NamespaceURI { 'http://purl.org/dc/elements/1.1/' }
-
-
 
 1;
 

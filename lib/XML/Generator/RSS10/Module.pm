@@ -2,9 +2,7 @@ package XML::Generator::RSS10::Module;
 
 use strict;
 
-
-sub Prefix
-{
+sub Prefix {
     my $class = shift;
 
     $class =~ /^XML::Generator::RSS10::(\w+)$/;
@@ -12,19 +10,16 @@ sub Prefix
     return $1;
 }
 
-sub contents
-{
+sub contents {
     my $class = shift;
-    my $rss = shift;
-    my $p = shift;
+    my $rss   = shift;
+    my $p     = shift;
 
-    foreach my $elt ( sort keys %$p )
-    {
+    foreach my $elt ( sort keys %$p ) {
         $rss->_element_with_data( $class->Prefix, $elt, $p->{$elt} );
         $rss->_newline_if_pretty;
     }
 }
-
 
 1;
 
